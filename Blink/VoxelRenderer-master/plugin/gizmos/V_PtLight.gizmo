@@ -1,0 +1,226 @@
+Gizmo {
+ inputs 2
+ tile_color 0xc19139ff
+ addUserKnob {20 VPtLight}
+ addUserKnob {41 value l "Light Colour" T LIGHT_COL.value}
+ addUserKnob {41 value_1 l "Scatter Colour" T SCATTER_COL.value}
+ addUserKnob {7 intensity l Intensity}
+ intensity 1
+ addUserKnob {7 absorption l Absorption t "Amount of light absorbed by each voxel."}
+ absorption 0.5
+ addUserKnob {3 samples l Samples t "How many samples to take per pixel. higher values will give more accurate results at the cost of speed."}
+ samples 64
+ addUserKnob {26 ""}
+ addUserKnob {41 operation T Merge.operation}
+ addUserKnob {41 mix T Merge.mix}
+ addUserKnob {20 graphics l GPU}
+ addUserKnob {41 "Local GPU: " T BlinkScript_point.gpuName}
+ addUserKnob {41 "Use GPU if Available" T BlinkScript_point.useGPUIfAvailable}
+ addUserKnob {41 maxGPUMemory l "Percentage of GPU memory to use" T BlinkScript_point.maxGPUMemory}
+ addUserKnob {41 maxTileLines l "Percentage of image height per tile" T BlinkScript_point.maxTileLines}
+}
+ Input {
+  inputs 0
+  name Inputlight
+  label 1
+  xpos 725
+  ypos -4
+  number 1
+ }
+ Input {
+  inputs 0
+  name Inputvoxels
+  label 0
+  xpos 603
+  ypos -4
+ }
+ Dot {
+  name Dot1
+  note_font_size 20
+  xpos 637
+  ypos 74
+ }
+set N8f6fa00 [stack 0]
+ Clamp {
+  channels alpha
+  maximum inf
+  name Clamp
+  xpos 603
+  ypos 116
+ }
+add_layer {voxels voxels.x voxels.y voxels.z voxels.density}
+ Shuffle {
+  in2 voxels
+  red red2
+  green green2
+  blue blue2
+  name Shuffle1
+  label "<font size = \"5\"> \[value in]"
+  xpos 603
+  ypos 158
+  postage_stamp true
+ }
+ BlinkScript {
+  kernelSourceFile bin/light/point.cpp
+  recompileCount 1
+  ProgramGroup 1
+  KernelDescription "2 \"VPtLight\" iterate pixelWise 3970e420d27d661986efe10ae3362d4593af2221d5f9d0f84cb692898ac01e3c 2 \"voxels\" Read Random \"dst\" Write Point 8 \"bbox_min\" Float 3 AAAAAAAAAAAAAAAAAAAAAA== \"bbox_max\" Float 3 AAAAAAAAAAAAAAAAAAAAAA== \"resolution\" Int 3 AAAAAAAAAAAAAAAAAAAAAA== \"light\" Float 3 AAAAAAAAAAAAAAAAAAAAAA== \"intensity\" Float 1 AACAPw== \"absorption\" Float 1 AAAAPw== \"samples\" Int 1 MgAAAA== \"transform_M\" Float 16 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA== 8 \"bbox_min\" 3 1 \"bbox_max\" 3 1 \"resolution\" 3 1 \"light\" 3 1 \"intensity\" 1 1 \"absorption\" 1 1 \"samples\" 1 1 \"transform_M\" 16 1 5 \"aabb\" Float 3 2 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= \"VoxelSizeInv\" Float 3 1 AAAAAAAAAAAAAAAAAAAAAA== \"_light\" Float 3 1 AAAAAAAAAAAAAAAAAAAAAA== \"grid_width\" Int 1 1 AAAAAA== \"_samples\" Int 1 1 AAAAAA=="
+  kernelSource "kernel VPtLight : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessRandom> voxels;\n  Image<eWrite> dst;\n\n  param:\n    float3 bbox_min;\n    float3 bbox_max;\n    int3 resolution;\n    float3 light;\n    float intensity;\n    float absorption;\n    int samples;\n    float4x4 transform_M;\n\n  local:\n    float3 aabb\[2];\n    float3 VoxelSizeInv;\n    float3 _light;\n    int grid_width;\n    int _samples;\n\n  void define()\n  \{\n    defineParam(intensity, \"intensity\", 1.0f);\n    defineParam(absorption, \"absorption\", 0.5f);\n    defineParam(samples, \"samples\", 50);\n  \}\n\n  void init()\n  \{\n    aabb\[0] = bbox_min;\n    aabb\[1] = bbox_max;\n\n    for (int c = 0; c < 3; c++)\n      VoxelSizeInv\[c] = resolution\[c] / (bbox_max\[c] - bbox_min\[c]);\n\n    _light = multVectMatrix(light, transform_M.invert());\n\n    grid_width = voxels.bounds.width();\n    _samples = max(1, samples);\n  \}\n\n  float3 multVectMatrix(float3 vec, float4x4 M)\n  \{\n    float3 out = float3(\n      vec.x * M\[0]\[0] + vec.y * M\[0]\[1] + vec.z * M\[0]\[2] + M\[0]\[3],\n      vec.x * M\[1]\[0] + vec.y * M\[1]\[1] + vec.z * M\[1]\[2] + M\[1]\[3],\n      vec.x * M\[2]\[0] + vec.y * M\[2]\[1] + vec.z * M\[2]\[2] + M\[2]\[3]\n    );\n\n    return out;\n  \}\n\n  // Axis aligned bounding box intersection for GPU : Shortened for exit only\n  float intersection_exit_AABB(float3 origin, float3 inv_dir)\n  \{\n    //bool sign\[3] \{inv_dir.x < 0, inv_dir.y < 0, inv_dir.z < 0\};\n    float tmin, tmax, tymin, tymax, tzmin, tzmax;\n    bool sign = inv_dir.x < 0 ? 0 : 1;\n    tmax  = (aabb\[sign].x - origin.x) * inv_dir.x;\n    sign = inv_dir.y < 0 ? 0 : 1;\n    tymax = (aabb\[sign].y - origin.y) * inv_dir.y;\n    sign = inv_dir.z < 0 ? 0 : 1;\n    tzmax = (aabb\[sign].z - origin.z) * inv_dir.z;\n    tmax = min(min(tmax, tymax), tzmax);\n    return tmax;\n  \}\n\n  float voxelValue(int3 voxel)\n  \{\n    // Return Empty for values outside of grid\n    if (voxel.x < 0 || resolution.x <= voxel.x ||\n        voxel.y < 0 || resolution.y <= voxel.y ||\n        voxel.z < 0 || resolution.z <= voxel.z )\n      return 0;\n\n    int id = (voxel.y * resolution.x + voxel.x) * resolution.z + voxel.z;\n    int x = id % grid_width;\n    int y = id / grid_width;\n    return voxels(x, y, 3); // Just alpha (density)\n  \}\n\n  float Blend(float3 curpos)\n  \{\n    float3 weight, voxel_space;\n    int3 base_voxel, offset;\n    // Lower Bound of 8 adjacent voxels\n    for (int c = 0; c < 3; c++)\n    \{\n      voxel_space\[c] = curpos\[c] * VoxelSizeInv\[c];\n      base_voxel\[c] = int(floor(voxel_space\[c] - 0.5f));\n    \}\n\n    float result = 0;\n    for (int i = 0; i < 8; i++)\n    \{\n      // Weighted distance on each axis for each adjacent voxel\n      offset = int3(i / 4, (i / 2) % 2, i % 2);\n      weight.x = 1 - fabs(offset.x - (voxel_space.x - (base_voxel.x + 0.5f)));\n      weight.y = 1 - fabs(offset.y - (voxel_space.y - (base_voxel.y + 0.5f)));\n      weight.z = 1 - fabs(offset.z - (voxel_space.z - (base_voxel.z + 0.5f)));\n\n      result += voxelValue(base_voxel + offset) * weight.x * weight.y * weight.z;\n    \}\n\n    return result;\n  \}\n\n  void process(int2 pos)\n  \{\n    // Skip empty voxels\n    float4 v = voxels(pos.x, pos.y);\n    if (v.w <= 0)\n      return;\n\n    // Starting values\n    float3 voxel = float3(v.x, v.y, v.z); // Center of voxel\n    float3 dir = voxel - _light; // from light to voxel\n    float dist_to_light = length(dir);\n    dir /= dist_to_light;\n\n    // Fire ray towards light, get closest distance\n    float max_dist = min(dist_to_light, intersection_exit_AABB(voxel, -1.0f / dir));\n\n    // ========== Ray Marching ==========\n\n    // Maximum of 1000 samples per voxel\n    float deltaT, result = intensity, step = max(max_dist / _samples, 0.001f);\n    float3 curpos;\n\n    for (float dist = 0; dist <= max_dist; dist += step)\n    \{\n      curpos = voxel - dir * dist;\n      deltaT = exp(-absorption * Blend(curpos - bbox_min) * step);\n      result *= deltaT;\n\n      // End loop if Transmittance is near 0\n      if (result < 1e-6)\n      \tbreak;\n      //dist += (result < 1e-6) * max_dist;\n    \}\n\n    dst() = result;\n\n  \}\n\n\};"
+  rebuild ""
+  VPtLight_bbox_min {{"\[lindex \[metadata bbox] 0]"} {"\[lindex \[metadata bbox] 1]"} {"\[lindex \[metadata bbox] 2]"}}
+  VPtLight_bbox_max {{"\[lindex \[metadata bbox] 3]"} {"\[lindex \[metadata bbox] 4]"} {"\[lindex \[metadata bbox] 5]"}}
+  VPtLight_resolution {{"\[lindex \[metadata resolution] 0]"} {"\[lindex \[metadata resolution] 1]"} {"\[lindex \[metadata resolution] 2]"}}
+  VPtLight_light {{input1.world_matrix.3} {input1.world_matrix.7} {input1.world_matrix.11}}
+  VPtLight_intensity {{parent.intensity}}
+  VPtLight_absorption {{parent.absorption}}
+  VPtLight_samples {{parent.samples}}
+  VPtLight_transform_M {
+      {{"\[lindex \[lindex \[metadata vTransformMatrix frame] 0] 0]"} {"\[lindex \[lindex \[metadata vTransformMatrix frame] 0] 1]"} {"\[lindex \[lindex \[metadata vTransformMatrix frame] 0] 2]"} {"\[lindex \[lindex \[metadata vTransformMatrix frame] 0] 3]"}}
+      {{"\[lindex \[lindex \[metadata vTransformMatrix frame] 1] 0]"} {"\[lindex \[lindex \[metadata vTransformMatrix frame] 1] 1]"} {"\[lindex \[lindex \[metadata vTransformMatrix frame] 1] 2]"} {"\[lindex \[lindex \[metadata vTransformMatrix frame] 1] 3]"}}
+      {{"\[lindex \[lindex \[metadata vTransformMatrix frame] 2] 0]"} {"\[lindex \[lindex \[metadata vTransformMatrix frame] 2] 1]"} {"\[lindex \[lindex \[metadata vTransformMatrix frame] 2] 2]"} {"\[lindex \[lindex \[metadata vTransformMatrix frame] 2] 3]"}}
+      {{"\[lindex \[lindex \[metadata vTransformMatrix frame] 3] 0]"} {"\[lindex \[lindex \[metadata vTransformMatrix frame] 3] 1]"} {"\[lindex \[lindex \[metadata vTransformMatrix frame] 3] 2]"} {"\[lindex \[lindex \[metadata vTransformMatrix frame] 3] 3]"}}
+    }
+  rebuild_finalise ""
+  name BlinkScript_point
+  xpos 603
+  ypos 278
+ }
+set N8f93c50 [stack 0]
+ Dot {
+  name Dot9
+  note_font_size 20
+  xpos 527
+  ypos 288
+ }
+ Multiply {
+  value {{1/intensity}}
+  name Multiply2
+  xpos 493
+  ypos 330
+ }
+ Dot {
+  name Dot7
+  note_font_size 20
+  xpos 527
+  ypos 406
+ }
+set N8fc7b60 [stack 0]
+push $N8f6fa00
+ Dot {
+  name Dot3
+  note_font_size 20
+  xpos 307
+  ypos 74
+ }
+ Multiply {
+  channels rgb
+  value 0
+  name Multiply1
+  xpos 273
+  ypos 230
+ }
+ Dot {
+  name Dot5
+  note_font_size 20
+  xpos 307
+  ypos 288
+ }
+set N8fdd660 [stack 0]
+ Add {
+  value {1 0.915 0.775 1}
+  value_panelDropped true
+  name LIGHT_COL
+  xpos 273
+  ypos 331
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy2
+  xpos 273
+  ypos 396
+ }
+ Dot {
+  name Dot8
+  note_font_size 20
+  xpos 307
+  ypos 537
+ }
+push $N8fc7b60
+ Invert {
+  channels alpha
+  name Invert1
+  xpos 493
+  ypos 458
+ }
+push $N8fdd660
+ Dot {
+  name Dot6
+  note_font_size 20
+  xpos 417
+  ypos 288
+ }
+ Add {
+  value {0.165 0.32 0.535 0}
+  value_panelDropped true
+  name SCATTER_COL
+  xpos 383
+  ypos 331
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  xpos 383
+  ypos 458
+ }
+ Merge2 {
+  inputs 2
+  operation xor
+  name Merge1
+  xpos 383
+  ypos 533
+ }
+ Dot {
+  name Dot10
+  note_font_size 20
+  xpos 417
+  ypos 601
+ }
+push $N8f93c50
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge2
+  xpos 603
+  ypos 597
+ }
+ Dot {
+  name Dot2
+  note_font_size 20
+  xpos 637
+  ypos 738
+ }
+push $N8f6fa00
+ Dot {
+  name Dot4
+  note_font_size 20
+  xpos 759
+  ypos 74
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  Achannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name Merge
+  xpos 725
+  ypos 734
+ }
+ Output {
+  name Output
+  xpos 725
+  ypos 793
+ }
+end_group

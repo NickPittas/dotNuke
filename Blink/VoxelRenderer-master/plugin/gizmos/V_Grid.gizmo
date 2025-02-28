@@ -1,0 +1,117 @@
+Gizmo {
+ inputs 0
+ tile_color 0xc44b11ff
+ addUserKnob {20 VGrid}
+ addUserKnob {31 voxel_bbox l "Bounding Box"}
+ voxel_bbox {-0.5 -0.5 -0.5 0.5 0.5 0.5}
+ addUserKnob {18 gridres l Resolution R 1 256}
+ gridres 64
+ addUserKnob {6 gridres_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 uniform -STARTLINE}
+ uniform true
+ addUserKnob {41 color l Color T Constant1.color}
+ addUserKnob {20 graphics l GPU}
+ addUserKnob {41 "Local GPU: " T BlinkScript_grid.gpuName}
+ addUserKnob {41 "Use GPU if Available" T BlinkScript_grid.useGPUIfAvailable}
+ addUserKnob {41 maxGPUMemory l "Percentage of GPU memory to use" T BlinkScript_grid.maxGPUMemory}
+ addUserKnob {41 maxTileLines l "Percentage of image height per tile" T BlinkScript_grid.maxTileLines}
+}
+ Axis2 {
+  inputs 0
+  display off
+  selectable false
+  name vTransformMatrix
+  xpos -22
+  ypos 124
+  addUserKnob {20 "Ppos Locator"}
+  addUserKnob {18 pointPosition l "Point Position"}
+  pointPosition {0 0 0}
+  addUserKnob {6 pointPosition_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ }
+ Constant {
+  inputs 0
+  name Constant1
+  xpos 159
+  ypos -138
+ }
+ Reformat {
+  type "to box"
+  box_width {{ceil(sqrt(CONTROL.total))}}
+  box_height {{ceil(sqrt(CONTROL.total))}}
+  box_fixed true
+  resize fill
+  center false
+  name Reformat1
+  xpos 159
+  ypos -29
+ }
+set N8e345a0 [stack 0]
+ Dot {
+  name Dot2
+  note_font_size 20
+  xpos 85
+  ypos -25
+ }
+ BlinkScript {
+  kernelSourceFile bin/generate/grid.cpp
+  KernelDescription "1 \"VGrid\" iterate pixelWise 3b140e8cbfda428ac95853bd9e9761e44d4c51aad2633cdb8042495cb9b9755b 2 \"format\" Read Point \"dst\" Write Point 4 \"bbox_min\" Float 3 AAAAAAAAAAAAAAAAAAAAAA== \"bbox_max\" Float 3 AAAAAAAAAAAAAAAAAAAAAA== \"resolution\" Int 3 AAAAAAAAAAAAAAAAAAAAAA== \"total\" Int 1 AAAAAA=="
+  kernelSource "kernel VGrid : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead> format;\n  Image<eWrite> dst;\n\n  param:\n    float3 bbox_min; // from origin\n    float3 bbox_max; // from origin\n    int3 resolution;\n    int total;\n\n  local:\n    float3 scale;\n\n  void init()\n  \{\n    for (int c = 0; c < 3; c++)\n      scale\[c] = (bbox_max\[c] - bbox_min\[c]) / resolution\[c];\n  \}\n\n  void process(int2 pos)\n  \{\n    int id = pos.y * dst.bounds.width() + pos.x;\n    if (id >= total)\n    \{\n      dst() = 0;\n      return;\n    \}\n    int xy = id / resolution.z;\n    dst(0) = ((xy % resolution.x) + 0.5f) * scale.x + bbox_min.x;\n    dst(1) = ((xy / resolution.x) + 0.5f) * scale.y + bbox_min.y;\n    dst(2) = ((id % resolution.z) + 0.5f) * scale.z + bbox_min.z;\n    dst(3) = 1;\n  \}\n\};"
+  rebuild ""
+  VGrid_bbox_min {{parent.voxel_bbox.x} {parent.voxel_bbox.y} {parent.voxel_bbox.n}}
+  VGrid_bbox_max {{parent.voxel_bbox.r} {parent.voxel_bbox.t} {parent.voxel_bbox.f}}
+  VGrid_resolution {{CONTROL.resolution.x} {CONTROL.resolution.y} {CONTROL.resolution.z}}
+  VGrid_total {{CONTROL.total}}
+  rebuild_finalise ""
+  name BlinkScript_grid
+  xpos 51
+  ypos 33
+ }
+ Dot {
+  name Dot1
+  note_font_size 20
+  xpos 85
+  ypos 103
+ }
+push $N8e345a0
+add_layer {voxels voxels.x voxels.y voxels.z voxels.density}
+ ShuffleCopy {
+  inputs 2
+  alpha alpha2
+  black red
+  white green
+  red2 blue
+  green2 alpha
+  out2 voxels
+  name ShuffleCopy1
+  xpos 159
+  ypos 99
+ }
+ ModifyMetaData {
+  metadata {
+   {set bbox "\[value voxel_bbox]"}
+   {set resolution "\[value CONTROL.resolution]"}
+   {set vTransformMatrix "\[value vTransformMatrix.world_matrix]"}
+  }
+  name ModifyMetaData1
+  xpos 159
+  ypos 143
+ }
+ Output {
+  name Output
+  xpos 159
+  ypos 195
+ }
+ NoOp {
+  inputs 0
+  name CONTROL
+  xpos 284
+  ypos 39
+  addUserKnob {20 User}
+  addUserKnob {3 total}
+  total {{"resolution.x * resolution.y * resolution.z"}}
+  addUserKnob {7 res_scale}
+  res_scale {{"gridres.r / (voxel_bbox.r - voxel_bbox.x)"}}
+  addUserKnob {13 resolution}
+  resolution {{"uniform ? rint(res_scale * (voxel_bbox.r - voxel_bbox.x)) : gridres"} {"uniform ? rint(res_scale * (voxel_bbox.t - voxel_bbox.y)) : gridres"} {"uniform ? rint(res_scale * (voxel_bbox.f - voxel_bbox.n)) : gridres"}}
+ }
+end_group

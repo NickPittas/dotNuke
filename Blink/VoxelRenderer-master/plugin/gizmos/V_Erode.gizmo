@@ -1,0 +1,78 @@
+Gizmo {
+ tile_color 0xc17939ff
+ addUserKnob {20 VoxelErode}
+ addUserKnob {7 size l Size R -5 5}
+ addUserKnob {41 mix T Copy1.mix}
+ addUserKnob {20 graphics l GPU}
+ addUserKnob {41 "Local GPU: " T BlinkScript_erode.gpuName}
+ addUserKnob {41 "Use GPU if Available" T BlinkScript_erode.useGPUIfAvailable}
+ addUserKnob {41 maxGPUMemory l "Percentage of GPU memory to use" T BlinkScript_erode.maxGPUMemory}
+ addUserKnob {41 maxTileLines l "Percentage of image height per tile" T BlinkScript_erode.maxTileLines}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 77
+  ypos -218
+ }
+ Dot {
+  name Dot1
+  note_font_size 20
+  xpos 111
+  ypos -183
+ }
+set N9165650 [stack 0]
+add_layer {voxels voxels.x voxels.y voxels.z voxels.density}
+ Shuffle {
+  in2 voxels
+  red red2
+  green green2
+  blue blue2
+  name Shuffle1
+  label "<font size = \"5\"> \[value in]"
+  xpos 77
+  ypos -146
+  postage_stamp true
+ }
+ BlinkScript {
+  kernelSourceFile bin/transform/erode.cpp
+  recompileCount 1
+  KernelDescription "2 \"VErode\" iterate pixelWise 4a8074b730e41e8384f9d3916e192849b41b1c393dd533aaac272cff9fe62f3b 2 \"voxels\" Read Random \"dst\" Write Point 4 \"bbox_min\" Float 3 AAAAAAAAAAAAAAAAAAAAAA== \"bbox_max\" Float 3 AAAAAAAAAAAAAAAAAAAAAA== \"resolution\" Int 3 AAAAAAAAAAAAAAAAAAAAAA== \"size\" Float 1 AAAAAA== 4 \"bbox_min\" 3 1 \"bbox_max\" 3 1 \"resolution\" 3 1 \"size\" 1 1 5 \"VoxelSizeInv\" Float 3 1 AAAAAAAAAAAAAAAAAAAAAA== \"negative\" Bool 1 1 AA== \"grid_width\" Int 1 1 AAAAAA== \"range\" Int 1 1 AAAAAA== \"max_length\" Float 1 1 AAAAAA=="
+  kernelSource "kernel VErode : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessRandom> voxels;\n  Image<eWrite> dst;\n\n  param:\n    float3 bbox_min;\n    float3 bbox_max;\n    int3 resolution;\n    float size;\n\n  local:\n    float3 VoxelSizeInv;\n    bool negative;\n    int grid_width;\n    int range;\n    float max_length;\n\n  void init()\n  \{\n    for (int c = 0; c < 3; c++)\n      VoxelSizeInv\[c] = resolution\[c] / (bbox_max\[c] - bbox_min\[c]);\n    negative = size < 0;\n    grid_width = voxels.bounds.width();\n    range = negative ? floor(size) : ceil(size);\n    max_length = size * size;\n  \}\n\n  float voxelValue(int3 voxel)\n  \{\n    int id = (voxel.y * resolution.x + voxel.x) * resolution.z + voxel.z;\n    int x = id % grid_width;\n    int y = id / grid_width;\n    return voxels(x, y, 3); // Just alpha (density)\n  \}\n\n  void process(int2 pos)\n  \{\n    float4 current = voxels(pos.x, pos.y);\n    int3 voxel;\n    for (int c = 0; c < 3; c++)\n      voxel\[c] = int((current\[c] - bbox_min\[c]) * VoxelSizeInv\[c]);\n\n    float length, new_val = voxelValue(voxel);\n    if (negative)\n    \{\n      // Minimum value within specified range\n      for (int i = max(voxel.x + range, 0); i <= min(voxel.x - range, resolution.x - 1); i++)\n        for (int j = max(voxel.y + range, 0); j <= min(voxel.y - range, resolution.y - 1); j++)\n          for (int k = max(voxel.z + range, 0); k <= min(voxel.z - range, resolution.z - 1); k++)\n          \{\n            length = pow(i - voxel.x, 2) + pow(j - voxel.y, 2) + pow(k - voxel.z, 2);\n            new_val = min(new_val, voxelValue(int3(i, j, k)) + 10000.0f * (length > max_length));\n          \}\n    \}\n    else\n    \{\n      // Maximum value within specified range\n      for (int i = max(voxel.x - range, 0); i <= min(voxel.x + range, resolution.x - 1); i++)\n        for (int j = max(voxel.y - range, 0); j <= min(voxel.y + range, resolution.y - 1); j++)\n          for (int k = max(voxel.z - range, 0); k <= min(voxel.z + range, resolution.z - 1); k++)\n          \{\n            length = pow(i - voxel.x, 2) + pow(j - voxel.y, 2) + pow(k - voxel.z, 2);\n            new_val = max(new_val, voxelValue(int3(i, j, k)) - 10000.0f * (length > max_length));\n          \}\n    \}\n\n    dst() = current;\n    dst(3) = new_val;\n  \}\n\};"
+  rebuild ""
+  VErode_bbox_min {{"\[lindex \[metadata bbox] 0]"} {"\[lindex \[metadata bbox] 1]"} {"\[lindex \[metadata bbox] 2]"}}
+  VErode_bbox_max {{"\[lindex \[metadata bbox] 3]"} {"\[lindex \[metadata bbox] 4]"} {"\[lindex \[metadata bbox] 5]"}}
+  VErode_resolution {{"\[lindex \[metadata resolution] 0]"} {"\[lindex \[metadata resolution] 1]"} {"\[lindex \[metadata resolution] 2]"}}
+  VErode_size {{parent.size}}
+  rebuild_finalise ""
+  name BlinkScript_erode
+  xpos 77
+  ypos -38
+ }
+ Dot {
+  name Dot2
+  note_font_size 20
+  xpos 111
+  ypos 28
+ }
+push $N9165650
+ Dot {
+  name Dot3
+  note_font_size 20
+  xpos 213
+  ypos -183
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  xpos 179
+  ypos 18
+ }
+ Output {
+  name Output
+  xpos 179
+  ypos 87
+ }
+end_group

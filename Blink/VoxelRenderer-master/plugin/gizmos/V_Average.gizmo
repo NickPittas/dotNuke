@@ -1,0 +1,70 @@
+Gizmo {
+ knobChanged "\nif nuke.thisKnob().name() == \"weight_channels\":\n    knob = nuke.thisNode().knob(\"weight\")\n    value = nuke.thisKnob().getValue()\n    if value < 3:\n        knob.setFlag(0x00040000)\n    else:\n        knob.clearFlag(0x00040000)\n"
+ tile_color 0xc17939ff
+ addUserKnob {20 VAverage}
+ addUserKnob {3 range l Range t "The radius of the area to blend.\nWill only average voxels with positive density."}
+ addUserKnob {4 weight_channels l "         Channels" t "Channels to be blended together. Custom can be used to set individual weights per channel" M {rgb rgba alpha Custom ""}}
+ addUserKnob {19 weight l Weight +HIDDEN}
+ weight {0.5 0.5 0.5 0.5}
+ addUserKnob {6 weight_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {20 graphics l GPU}
+ addUserKnob {41 "Local GPU: " T BlinkScript_average.gpuName}
+ addUserKnob {41 "Use GPU if Available" T BlinkScript_average.useGPUIfAvailable}
+ addUserKnob {41 maxGPUMemory l "Percentage of GPU memory to use" T BlinkScript_average.maxGPUMemory}
+ addUserKnob {41 maxTileLines l "Percentage of image height per tile" T BlinkScript_average.maxTileLines}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 255
+  ypos 53
+ }
+ Dot {
+  name Dot13
+  note_font_size 20
+  xpos 289
+  ypos 122
+ }
+set N911b130 [stack 0]
+add_layer {voxels voxels.x voxels.y voxels.z voxels.density}
+ Shuffle {
+  in voxels
+  in2 rgba
+  alpha alpha2
+  name Shuffle2
+  label "<font size = \"5\"> \[value in]"
+  xpos 426
+  ypos 82
+  postage_stamp true
+ }
+ Dot {
+  name Dot14
+  note_font_size 20
+  xpos 460
+  ypos 243
+ }
+push $N911b130
+ BlinkScript {
+  inputs 2
+  kernelSourceFile bin/transform/average.cpp
+  recompileCount 1
+  ProgramGroup 1
+  KernelDescription "2 \"VAverage\" iterate pixelWise 2d8525d7ab50d97e24399e054560862c62cacd8c388d3e33f622e673acd378f6 3 \"colour\" Read Random \"voxels\" Read Random \"dst\" Write Point 5 \"weight\" Float 4 AAAAAAAAAAAAAAAAAAAAAA== \"bbox_min\" Float 3 AAAAAAAAAAAAAAAAAAAAAA== \"bbox_max\" Float 3 AAAAAAAAAAAAAAAAAAAAAA== \"resolution\" Int 3 AAAAAAAAAAAAAAAAAAAAAA== \"range\" Int 1 AAAAAA== 5 \"weight\" 4 1 \"bbox_min\" 3 1 \"bbox_max\" 3 1 \"resolution\" 3 1 \"range\" 1 1 4 \"_weight\" Float 4 1 AAAAAAAAAAAAAAAAAAAAAA== \"VoxelSizeInv\" Float 3 1 AAAAAAAAAAAAAAAAAAAAAA== \"grid_width\" Int 1 1 AAAAAA== \"max_length\" Float 1 1 AAAAAA=="
+  kernelSource "kernel VAverage : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessRandom> colour;\n  Image<eRead, eAccessRandom> voxels;\n  Image<eWrite> dst;\n\n  param:\n    float4 weight;\n    float3 bbox_min;\n    float3 bbox_max;\n    int3 resolution;\n    int range;\n\n  local:\n    float4 _weight;\n    float3 VoxelSizeInv;\n    int grid_width;\n    float max_length;\n\n  void init()\n  \{\n    for (int c = 0; c < 3; c++)\n    \{\n      VoxelSizeInv\[c] = resolution\[c] / (bbox_max\[c] - bbox_min\[c]);\n      _weight\[c] = clamp(weight\[c], 0.0f, 1.0f);\n    \}\n    _weight.w = clamp(weight.w, 0.0f, 1.0f);\n    grid_width = voxels.bounds.width();\n    max_length = range * range;\n  \}\n\n  float4 voxelValue(int3 voxel)\n  \{\n    int id = (voxel.y * resolution.x + voxel.x) * resolution.z + voxel.z;\n    int x = id % grid_width;\n    int y = id / grid_width;\n    return colour(x, y);\n  \}\n\n  void process(int2 pos)\n  \{\n    float4 current = voxels(pos.x, pos.y);\n\n    int3 voxel;\n    for (int c = 0; c < 3; c++)\n      voxel\[c] = int((current\[c] - bbox_min\[c]) * VoxelSizeInv\[c]);\n\n    float4 value, result = 0;\n    int total = 0;\n    float length;\n\n    // Maximum value within specified range\n    for (int i = max(voxel.x - range, 0); i <= min(voxel.x + range, resolution.x - 1); i++)\n      for (int j = max(voxel.y - range, 0); j <= min(voxel.y + range, resolution.y - 1); j++)\n        for (int k = max(voxel.z - range, 0); k <= min(voxel.z + range, resolution.z - 1); k++)\n        \{\n          length = pow(i - voxel.x, 2) + pow(j - voxel.y, 2) + pow(k - voxel.z, 2);\n          value = voxelValue(int3(i, j, k)) * (length <= max_length);\n          total += (value.w > 0);\n          result += value * (value.w > 0);\n        \}\n    \n    current = voxelValue(voxel);\n    if (total < 1)\n      dst() = current;\n    else\n      for (int c = 0; c < 4; c++)\n        dst(c) = (result\[c] / total - current\[c]) * _weight\[c] + current\[c];\n  \}\n\};"
+  rebuild ""
+  VAverage_weight {{"weight_channels < 2 ? 1 : (weight_channels == 2 ? 0 : weight)"} {"weight_channels < 2 ? 1 : (weight_channels == 2 ? 0 : weight)"} {"weight_channels < 2 ? 1 : (weight_channels == 2 ? 0 : weight)"} {"weight_channels == 0 ? 0 : (weight_channels == 1 || weight_channels == 2 ? 1 : weight)"}}
+  VAverage_bbox_min {{"\[lindex \[metadata bbox] 0]"} {"\[lindex \[metadata bbox] 1]"} {"\[lindex \[metadata bbox] 2]"}}
+  VAverage_bbox_max {{"\[lindex \[metadata bbox] 3]"} {"\[lindex \[metadata bbox] 4]"} {"\[lindex \[metadata bbox] 5]"}}
+  VAverage_resolution {{"\[lindex \[metadata resolution] 0]"} {"\[lindex \[metadata resolution] 1]"} {"\[lindex \[metadata resolution] 2]"}}
+  VAverage_range {{parent.range}}
+  rebuild_finalise ""
+  name BlinkScript_average
+  xpos 255
+  ypos 233
+ }
+ Output {
+  name Output
+  xpos 255
+  ypos 333
+ }
+end_group
