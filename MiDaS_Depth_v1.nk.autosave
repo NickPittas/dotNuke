@@ -1,0 +1,212 @@
+#! /Applications/Nuke15.0v4/Nuke15.0v4.app/Contents/MacOS/libnuke-15.0.4.dylib -nx
+version 15.0 v4
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="0" y="38" w="1512" h="857" maximized="1" screen="0">
+        <splitter orientation="2">
+            <split size="64"/>
+            <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                <page id="Toolbar.1"/>
+            </dock>
+            <split size="773"/>
+            <splitter orientation="1">
+                <split size="1028"/>
+                <splitter orientation="2">
+                    <split size="523"/>
+                    <dock id="" activePageId="Viewer.1">
+                        <page id="Viewer.1"/>
+                    </dock>
+                    <split size="246"/>
+                    <dock id="" activePageId="DAG.1" focus="true">
+                        <page id="DAG.1"/>
+                        <page id="Curve Editor.1"/>
+                        <page id="DopeSheet.1"/>
+                    </dock>
+                </splitter>
+                <split size="480"/>
+                <dock id="" activePageId="Properties.1">
+                    <page id="Properties.1"/>
+                    <page id="uk.co.thefoundry.backgroundrenderview.1"/>
+                    <page id="Scenegraph.1"/>
+                </dock>
+            </splitter>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+ inputs 0
+ name "/Users/npittas/Library/CloudStorage/GoogleDrive-npittas@moeffect.gr/My Drive/.nuke/MiDaS_Depth_v1.nk"
+ frame 1694
+ last_frame 6168
+ lock_range true
+ colorManagement Nuke
+ workingSpaceLUT linear
+ monitorLut sRGB
+ monitorOutLUT rec709
+ int8Lut sRGB
+ int16Lut sRGB
+ logLut Cineon
+ floatLut linear
+}
+Group {
+ inputs 0
+ name MiDaS_Depth
+ xpos -51
+ ypos -155
+ addUserKnob {20 User}
+ addUserKnob {41 modelFile l "Model File" T Inference3.modelFile}
+ addUserKnob {26 ""}
+ addUserKnob {41 resMult l "Input Resolution Scale" T Controller.resMult}
+ addUserKnob {26 ""}
+ addUserKnob {41 filter l "input filter" T InputResize.filter}
+ addUserKnob {41 Log l "Input Log Transform" -STARTLINE T Controller.Log}
+ addUserKnob {26 ""}
+ addUserKnob {41 out_filter l "output filter" T outputResize.filter}
+ addUserKnob {41 LogOut l "Output Log Transform" -STARTLINE T Controller.LogOut}
+ addUserKnob {41 tviScale l "TVI upscale" -STARTLINE T Controller.tviScale}
+ addUserKnob {26 ""}
+ addUserKnob {41 whitepoint T Grade1.whitepoint}
+ addUserKnob {41 blackpoint T Grade2.blackpoint}
+ addUserKnob {26 ""}
+ addUserKnob {26 INFO l "" +STARTLINE T "v1.01 - (c) Owen Bulka and Riley Gray - 2021  \nMiDaS v2.1"}
+ addUserKnob {20 Citation}
+ addUserKnob {26 cit l "" +STARTLINE T "@article\{Ranftl2020,\n\tauthor    = \{Ren\\'\{e\} Ranftl and Katrin Lasinger and David Hafner and Konrad Schindler and Vladlen Koltun\},\n\ttitle     = \{Towards Robust Monocular Depth Estimation: Mixing Datasets for Zero-shot Cross-dataset Transfer\},\n\tjournal   = \{IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI)\},\n\tyear      = \{2020\},\n\}"}
+ addUserKnob {26 link l "" +STARTLINE T https://github.com/isl-org/MiDaS}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 0
+ }
+ Dot {
+  name Dot2
+  xpos 34
+  ypos 114
+ }
+ Colorspace {
+  colorspace_out AlexaV3LogC
+  name Colorspace7
+  xpos 0
+  ypos 206
+  disable {{1-parent.Controller.Log}}
+ }
+ Reformat {
+  type "to box"
+  box_width {{parent.Dot2.width>parent.Dot2.height?ceil(384*parent.Controller.resMult/32)*32:ceil(width/(height/384/parent.Controller.resMult)/32)*32}}
+  box_height {{parent.Dot2.width>parent.Dot2.height?ceil(height/(width/384/parent.Controller.resMult)/32)*32:ceil(384*parent.Controller.resMult/32)*32}}
+  box_fixed true
+  resize distort
+  filter impulse
+  name InputResize
+  xpos 0
+  ypos 290
+ }
+ Colorspace {
+  colorspace_in AlexaV3LogC
+  name Colorspace1
+  xpos 0
+  ypos 362
+  disable {{1-parent.Controller.Log}}
+ }
+ Expression {
+  expr0 "(r - 0.485) / 0.229"
+  expr1 "(g - 0.456) /  0.224"
+  expr2 "(b - 0.406) / 0.225"
+  name Expression2
+  xpos 0
+  ypos 471
+ }
+ Remove {
+  operation keep
+  channels rgb
+  name Remove2
+  xpos 0
+  ypos 505
+ }
+ Inference {
+  modelFile "/Users/npittas/Google Drive/My Drive/.nuke/MiDaS_21_large_v001.cat"
+  serialiseKnob {}
+  name Inference3
+  xpos 0
+  ypos 575
+ }
+ Grade {
+  whitepoint 4500
+  name Grade1
+  xpos 0
+  ypos 640
+ }
+ Grade {
+  blackpoint 0.1
+  name Grade2
+  xpos 0
+  ypos 683
+ }
+ TVIscale {
+  name TVIscale1
+  xpos 0
+  ypos 740
+  disable {{1-parent.Controller.tviScale}}
+ }
+ TVIscale {
+  name TVIscale2
+  xpos 0
+  ypos 786
+  disable {{1-parent.Controller.tviScale}}
+ }
+ Colorspace {
+  colorspace_out AlexaV3LogC
+  name Colorspace2
+  xpos 0
+  ypos 841
+  disable {{1-parent.Controller.LogOut}}
+ }
+ Reformat {
+  type "to box"
+  box_width {{Dot2.width}}
+  box_height {{Dot2.height}}
+  box_fixed true
+  resize distort
+  filter Lanczos4
+  name outputResize
+  xpos 0
+  ypos 887
+ }
+ Colorspace {
+  colorspace_in AlexaV3LogC
+  name Colorspace3
+  xpos 0
+  ypos 937
+  disable {{1-parent.Controller.LogOut}}
+ }
+ Output {
+  name Output1
+  xpos 0
+  ypos 991
+ }
+ NoOp {
+  inputs 0
+  name Controller
+  xpos 159
+  ypos 202
+  addUserKnob {20 User}
+  addUserKnob {7 resMult l "Input Resolution Scale" R 0 4}
+  resMult 1
+  addUserKnob {26 ""}
+  addUserKnob {6 Log l "Input Log Transform" +STARTLINE}
+  Log true
+  addUserKnob {6 LogOut l "Output Log Transform" +STARTLINE}
+  LogOut true
+  addUserKnob {6 tviScale l "TVI upscale" +STARTLINE}
+ }
+end_group
+Viewer {
+ frame 1694
+ frame_range 1-6168
+ monitorOutNDISenderName "NukeX - MiDaS_Depth_v1 - Viewer1"
+ monitorOutOutputTransform rec709
+ name Viewer1
+ xpos -55
+ ypos -217
+}

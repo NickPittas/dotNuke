@@ -1,0 +1,24 @@
+set cut_paste_input [stack 0]
+version 12.2 v3
+push $cut_paste_input
+NoOp {
+name NoOp1
+selected true
+xpos 1170
+ypos 441
+addUserKnob {20 User}
+addUserKnob {13 TranslateOriginal l Translate}
+TranslateOriginal {{"parent.Camera5.translate.integrate(frame+smooth, frame-smooth)/(2*smooth)" i} {"parent.Camera5.translate.integrate(frame+smooth, frame-smooth)/(2*smooth)" i} {"parent.Camera5.translate.integrate(frame+smooth, frame-smooth)/(2*smooth)" i}}
+addUserKnob {13 rotateOriginal l Rotate}
+rotateOriginal {{"parent.Camera5.rotate.integrate(frame+smooth, frame-smooth)/(2*smooth)" i} {"parent.Camera5.rotate.integrate(frame+smooth, frame-smooth)/(2*smooth)" i} {"parent.Camera5.rotate.integrate(frame+smooth, frame-smooth)/(2*smooth)" i}}
+addUserKnob {7 smooth l Smooth R 0 100}
+smooth 100
+}
+Camera2 {
+translate {{parent.NoOp1.TranslateOriginal} {parent.NoOp1.TranslateOriginal} {parent.NoOp1.TranslateOriginal}}
+rotate {{parent.NoOp1.rotateOriginal i} {parent.NoOp1.rotateOriginal i} {parent.NoOp1.rotateOriginal i}}
+name Camera6
+selected true
+xpos 1351
+ypos 420
+}

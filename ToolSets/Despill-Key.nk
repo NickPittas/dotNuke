@@ -1,0 +1,459 @@
+set cut_paste_input [stack 0]
+version 9.0 v8
+BackdropNode {
+inputs 0
+name BackdropNode18
+tile_color 0x8e8e3800
+label "Edge Despill"
+note_font_size 62
+selected true
+xpos 1516
+ypos -812
+bdwidth 444
+bdheight 318
+}
+BackdropNode {
+inputs 0
+name BackdropNode19
+tile_color 0x7171c600
+label "Core Despill"
+note_font_size 72
+selected true
+xpos 635
+ypos -809
+bdwidth 522
+bdheight 346
+}
+push $cut_paste_input
+Dot {
+name Dot3
+selected true
+xpos 742
+ypos -1067
+}
+set Nb0bd8000 [stack 0]
+Dot {
+name Dot4
+selected true
+xpos 1622
+ypos -1067
+}
+set N77605000 [stack 0]
+Dot {
+name Dot1
+selected true
+xpos 2418
+ypos -1067
+}
+Denoise2 {
+type Digital
+model Constant
+profile Automatic
+analysisRegion {252 464 722 882}
+analysisFrame 1039
+needsAnalyzing false
+needsProfile false
+profileExists true
+profileCurve {profile {curve 1 x0.125 1 0.9271749854 0.5395774245 0.369209826 0.2216084749 0.1436188817 0.1203767508 0.0821652934}}
+profileFrame 1039
+serializeKnob "0.753777 0.690116 0.62214
+0.00373649 0.00430238 0.00350321
+0.00373649 0.00430238 0.00350321
+0.00355991 0.0031485 0.00252756
+0 0 0
+0.00133322 0.00207608 0.00172478
+0.00133322 0.00207608 0.00172478
+0.00107383 0.00155834 0.00127369
+0 0 0
+0.000603823 0.000980124 0.000814494
+0.000603823 0.000980124 0.000814494
+0.000404692 0.000686469 0.000563219
+0 0 0
+0.000300718 0.000492478 0.000402873
+0.000300718 0.000492478 0.000402873
+0.000148693 0.00030556 0.000243763
+1 1 0.927175 0.539577 0.36921 0.221608 0.143619 0.120377 0.0821653 
+8743764019420721071"
+name Denoise1
+selected true
+xpos 2384
+ypos -1029
+}
+set N9dba5000 [stack 0]
+FrameHold {
+first_frame 1001
+name FrameHold1
+selected true
+xpos 2274
+ypos -933
+}
+push $N9dba5000
+IBKGizmoV3 {
+inputs 2
+name IBKGizmoV3_1
+xpos 2384
+ypos -927
+st C-green
+red_weight 0.55
+level 0.97
+luma 0.495
+}
+Dot {
+name Dot6
+selected true
+xpos 2418
+ypos -179
+}
+set N72108800 [stack 0]
+Dot {
+name Dot7
+selected true
+xpos 2418
+ypos -33
+}
+push $N72108800
+Group {
+name ExponBlur_v1
+help "L_ExponBlur_v03 The ExponBlur blurs an image with an exponential falloff based upon an alpha. Most often used with roto shapes. The effect is applied to RGBA only. (For any questions, comments or suggestions please email gizmos@luma-pictures.com)"
+note_font "Bitstream Vera Sans"
+selected true
+xpos 1759
+ypos -182
+mapsize {0.15 0.15}
+addUserKnob {20 ExponBlur}
+addUserKnob {26 Description l "" +STARTLINE T ":ExponBlur: by Luma Pictures\n\nExponentially blurs image outward or inward"}
+addUserKnob {14 size R -40 40}
+size -5
+addUserKnob {7 Multiplier R 0 10}
+Multiplier 3.65
+addUserKnob {6 crop l "crop to format" +STARTLINE}
+addUserKnob {6 disableCropBB l "disable CropBB" -STARTLINE}
+addUserKnob {26 ""}
+}
+Input {
+inputs 0
+name Input1
+xpos -372
+ypos 265
+}
+set N71f81400 [stack 0]
+Invert {
+name L_ExponBlur_Invert4
+xpos -372
+ypos 330
+disable {{"parent.size>=0 ? 1 : 0" i}}
+}
+set Nbe953400 [stack 0]
+Blur {
+size {{parent.size.w i} {parent.size.h i}}
+crop {{parent.crop i}}
+name L_ExponBlur_Blur1
+label "\[value size]"
+xpos -592
+ypos 479
+}
+push $Nbe953400
+Blur {
+size {{parent.size.w*parent.Multiplier i} {parent.size.h*parent.Multiplier i}}
+crop {{parent.crop i}}
+name L_ExponBlur_Blur2
+label "\[value size]"
+xpos -482
+ypos 479
+}
+Merge2 {
+inputs 2
+name L_ExponBlur_Merge7
+xpos -537
+ypos 572
+}
+push $Nbe953400
+Blur {
+size {{parent.size.w*parent.Multiplier*2 i} {parent.size.h*parent.Multiplier*2 i}}
+crop {{parent.crop i}}
+name L_ExponBlur_Blur3
+label "\[value size]"
+xpos -372
+ypos 479
+}
+Merge2 {
+inputs 2
+name L_ExponBlur_Merge8
+xpos -477
+ypos 637
+}
+push $Nbe953400
+Blur {
+size {{parent.size.w*parent.Multiplier*4 i} {parent.size.h*parent.Multiplier*4 i}}
+crop {{parent.crop i}}
+name L_ExponBlur_Blur4
+label "\[value size]"
+xpos -262
+ypos 479
+}
+Merge2 {
+inputs 2
+name L_ExponBlur_Merge9
+xpos -372
+ypos 709
+}
+Invert {
+name L_ExponBlur_Invert5
+xpos -372
+ypos 774
+disable {{"parent.size>=0 ? 1 : 0" i}}
+}
+Clamp {
+channels alpha
+name L_ExponBlur_clampOutput
+xpos -372
+ypos 833
+}
+set N72033000 [stack 0]
+Viewer {
+input_process false
+name Viewer1
+xpos -372
+ypos 372
+}
+push $N72033000
+Crop {
+box {0 0 {input.width i} {input.height i}}
+reformat true
+crop false
+name L_ExponBlur_Crop1
+xpos -372
+ypos 901
+disable {{parent.disableCropBB i x-5 1}}
+}
+push $N71f81400
+Dot {
+name Dot1
+xpos -81
+ypos 270
+}
+ShuffleCopy {
+inputs 2
+red red
+green green
+blue blue
+name L_ExponBlur_ChannelsPassThrough
+xpos -115
+ypos 901
+}
+Output {
+name Output1
+xpos -115
+ypos 993
+}
+end_group
+push $Nb0bd8000
+Dot {
+name Dot5
+selected true
+xpos 742
+ypos -848
+}
+set N75f48c00 [stack 0]
+Dot {
+name Dot56
+selected true
+xpos 962
+ypos -848
+}
+push $N75f48c00
+OFXuk.co.thefoundry.keylight.keylight_v201 {
+show "Final Result"
+unPreMultiply false
+screenColour {0.132308349 0.287035197 0.08334472775}
+screenGain 1.17
+screenBalance 0.585
+alphaBias {0.5 0.5 0.5}
+despillBias {0.5 0.5 0.5}
+gangBiases true
+preBlur 0
+"Screen Matte" 0
+screenClipMin 0
+screenClipMax 1
+screenClipRollback 0
+screenGrowShrink 0
+screenSoftness 0
+screenDespotBlack 0
+screenDespotWhite 0
+screenReplaceMethod "Soft Colour"
+screenReplaceColour {0.5 0.5 0.5}
+Tuning 0
+midPoint 0.5
+lowGain 1
+midGain 1
+highGain 1
+"Inside Mask" 0
+sourceAlphaHandling Ignore
+insideReplaceMethod "Soft Colour"
+insideReplaceColour {0.5 0.5 0.5}
+Crops 0
+SourceXMethod Colour
+SourceYMethod Colour
+SourceEdgeColour 0
+SourceCropL 0
+SourceCropR 1
+SourceCropB 0
+SourceCropT 1
+balanceSet true
+insideComponent None
+outsideComponent None
+cacheBreaker true
+name Keylight1
+selected true
+xpos 708
+ypos -615
+}
+set Nb0bd8400 [stack 0]
+Merge2 {
+inputs 2
+operation minus
+name Merge25
+selected true
+xpos 928
+ypos -615
+}
+Saturation {
+saturation 0
+name Saturation7
+selected true
+xpos 928
+ypos -567
+}
+push $Nb0bd8400
+Merge2 {
+inputs 2
+operation plus
+name Merge26
+selected true
+xpos 708
+ypos -567
+}
+Dot {
+name Dot57
+selected true
+xpos 742
+ypos -179
+}
+push $N77605000
+Dot {
+name Dot52
+selected true
+xpos 1622
+ypos -707
+}
+set N729dbc00 [stack 0]
+Dot {
+name Dot53
+selected true
+xpos 1952
+ypos -707
+}
+push $N729dbc00
+OFXuk.co.thefoundry.keylight.keylight_v201 {
+show "Final Result"
+unPreMultiply false
+screenColour {0.1372070163 0.2885741889 0.0922851488}
+screenGain 1.13
+screenBalance 0.5
+alphaBias {0.5 0.5 0.5}
+despillBias {0.5 0.5 0.5}
+gangBiases true
+preBlur 0
+"Screen Matte" 0
+screenClipMin 0
+screenClipMax 1
+screenClipRollback 0
+screenGrowShrink 0
+screenSoftness 0
+screenDespotBlack 0
+screenDespotWhite 0
+screenReplaceMethod "Soft Colour"
+screenReplaceColour {0.5 0.5 0.5}
+Tuning 0
+midPoint 0.5
+lowGain 1
+midGain 1
+highGain 1
+"Inside Mask" 0
+sourceAlphaHandling Ignore
+insideReplaceMethod "Soft Colour"
+insideReplaceColour {0.5 0.5 0.5}
+Crops 0
+SourceXMethod Colour
+SourceYMethod Colour
+SourceEdgeColour 0
+SourceCropL 0
+SourceCropR 1
+SourceCropB 0
+SourceCropT 1
+balanceSet false
+insideComponent None
+outsideComponent None
+cacheBreaker true
+name Keylight3
+selected true
+xpos 1588
+ypos -615
+}
+set N72971c00 [stack 0]
+Merge2 {
+inputs 2
+operation minus
+name Merge23
+selected true
+xpos 1918
+ypos -615
+}
+Saturation {
+saturation 0
+name Saturation5
+selected true
+xpos 1918
+ypos -543
+}
+Dot {
+name Dot58
+label "despill\nMatte"
+note_font_size 41
+selected true
+xpos 1952
+ypos -323
+}
+push $N72971c00
+Dot {
+name Dot54
+selected true
+xpos 1622
+ypos -539
+}
+add_layer {despill despill.red}
+Copy {
+inputs 2
+from0 rgba.red
+to0 despill.red
+name Copy7
+selected true
+xpos 1588
+ypos -333
+}
+Keymix {
+inputs 3
+name Keymix2
+selected true
+xpos 1588
+ypos -189
+}
+Copy {
+inputs 2
+from0 rgba.alpha
+to0 rgba.alpha
+name Copy2
+selected true
+xpos 1588
+ypos -43
+}

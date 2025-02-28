@@ -1,0 +1,112 @@
+set cut_paste_input [stack 0]
+version 11.2 v3
+Read {
+ inputs 0
+ file_type exr
+ file "E:/Test Cryptomatte/Test.VRayCryptomatte02.0236.exr"
+ format "640 480 0 0 640 480 1 PC_Video"
+ origset true
+ name Read5
+ selected true
+ xpos 698
+ ypos -122
+}
+Read {
+ inputs 0
+ file_type exr
+ file "E:/Test Cryptomatte/Test.VRayCryptomatte01.0236.exr"
+ format "640 480 0 0 640 480 1 PC_Video"
+ origset true
+ name Read4
+ selected true
+ xpos 707
+ ypos -240
+}
+Read {
+ inputs 0
+ file_type exr
+ file "E:/Test Cryptomatte/Test.VRayCryptomatte00.0236.exr"
+ format "640 480 0 0 640 480 1 PC_Video"
+ origset true
+ name Read3
+ selected true
+ xpos 697
+ ypos -380
+}
+Read {
+ inputs 0
+ file_type exr
+ file "E:/Test Cryptomatte/Test.VRayCryptomatte.0236.exr"
+ format "640 480 0 0 640 480 1 PC_Video"
+ origset true
+ name Read2
+ selected true
+ xpos 692
+ ypos -471
+}
+push $cut_paste_input
+add_layer {VRayCryptomatteLayerName VRayCryptomatteLayerName.red VRayCryptomatteLayerName.green VRayCryptomatteLayerName.blue VRayCryptomatteLayerName.alpha}
+ShuffleCopy {
+ inputs 2
+ alpha alpha2
+ black red
+ white green
+ red2 blue
+ green2 alpha
+ out2 VRayCryptomatteLayerName
+ name ShuffleCopy2
+ selected true
+ xpos 449
+ ypos -441
+}
+add_layer {VRayCryptomatteLayerName00 VRayCryptomatteLayerName00.red VRayCryptomatteLayerName00.green VRayCryptomatteLayerName00.blue VRayCryptomatteLayerName00.alpha}
+ShuffleCopy {
+ inputs 2
+ alpha alpha2
+ black red
+ white green
+ red2 blue
+ green2 alpha
+ out2 VRayCryptomatteLayerName00
+ name ShuffleCopy3
+ selected true
+ xpos 449
+ ypos -350
+}
+add_layer {VRayCryptomatteLayerName01 VRayCryptomatteLayerName01.red VRayCryptomatteLayerName01.green VRayCryptomatteLayerName01.blue VRayCryptomatteLayerName01.alpha}
+ShuffleCopy {
+ inputs 2
+ alpha alpha2
+ black red
+ white green
+ red2 blue
+ green2 alpha
+ out2 VRayCryptomatteLayerName01
+ name ShuffleCopy4
+ selected true
+ xpos 449
+ ypos -210
+}
+add_layer {VRayCryptomatteLayerName02 VRayCryptomatteLayerName02.red VRayCryptomatteLayerName02.green VRayCryptomatteLayerName02.blue VRayCryptomatteLayerName02.alpha}
+ShuffleCopy {
+ inputs 2
+ alpha alpha2
+ black red
+ white green
+ red2 blue
+ green2 alpha
+ out2 VRayCryptomatteLayerName02
+ name ShuffleCopy5
+ selected true
+ xpos 449
+ ypos -92
+}
+ModifyMetaData {
+ metadata {
+  {set exr/cryptomatte//name VRayCryptomatteLayerName}
+ }
+ name ModifyMetaData1
+ selected true
+ xpos 449
+ ypos -45
+}

@@ -1,0 +1,47 @@
+Shortcuts
+
+W_smartAlign.alignNodes("left") # Alt+left
+W_smartAlign.alignNodes("right") # Alt+right
+W_smartAlign.alignNodes("up") # Alt+up
+W_smartAlign.alignNodes("down") # Alt+down
+
+import W_backdropper # alt+shift+b
+F_Backdrop.autoBackdrop() # alt+b
+channel_hotbox.start()# alt+q
+pasteTransformation.pasteTransformation(link = False) # alt+v
+import knob_scripter # alt+z
+
+Toggle/Toggle all Nodes # Shift+D
+jre_setReferenceFrame # shift+F
+lifetimeRoto.setRotoLifeTime() # shift+i
+sbnAlignNodes('vertical') # shift+L
+Re-Label Nodes # shift+n
+Toggle/Toggle all "Read" inputs # Shift+R
+pasteTransformation.pasteTransformation(link = True) # shift+v
+
+jns_backdrop.autoBackdrop() # ctrl+b
+nuke.createNode('FrameHold') # Ctrl+f
+nuke.createNode('Premult') # Ctrl+p
+jns_autotracker.update_tracker_TRS # ctrl+t
+
+import W_hotbox, W_hotboxManager # `
+Dots.Dots() # , 
+auto_cornerpin.auto_cornerpin() # shift+c
+nuke.createNode('Erode') # e
+Snip Connections # j
+sbnAlignNodes('default') # L
+Draw Connections # u
+
+STAMPS_SHORTCUT = "F8"
+
+presetBackdrop.presetBackdrop() # ctrl+alt+b
+jns_crop.autocrop # ctrl+alt+c
+
+PasteForEachNode.PasteForEachNode() # ctrl+shift+v
+
+
+
+
+
+
+

@@ -1,0 +1,190 @@
+set cut_paste_input [stack 0]
+version 11.2 v2
+BackdropNode {
+ inputs 0
+ name High_Pass
+ tile_color 0x4b4b4b01
+ label "High Pass"
+ note_font_size 30
+ selected true
+ xpos 164
+ ypos 234
+ bdwidth 251
+ bdheight 174
+}
+push $cut_paste_input
+Dot {
+ name Dot2
+ selected true
+ xpos 53
+ ypos 182
+}
+set N87f46380 [stack 0]
+Blur {
+ size 30
+ name Gausian_Blur
+ selected true
+ xpos 6
+ ypos 258
+ cached true
+}
+Dot {
+ name Dot1
+ selected true
+ xpos 53
+ ypos 338
+}
+set N87f47c00 [stack 0]
+Invert {
+ name Invert1
+ selected true
+ xpos 163
+ ypos 328
+}
+push $N87f46380
+Dot {
+ name Dot3
+ selected true
+ xpos 346
+ ypos 182
+}
+Merge2 {
+ inputs 2
+ operation plus
+ name Merge1
+ selected true
+ xpos 299
+ ypos 334
+}
+Expression {
+ expr0 r/2
+ expr1 g/2
+ expr2 b/2
+ name Expression1
+ selected true
+ xpos 299
+ ypos 372
+}
+RotoPaint {
+ curves {{{v x3f99999a}
+  {f 0}
+  {n
+   {layer Root
+    {f 2097664}
+    {t x451a7000 x44cdf000}
+    {a pt1x 0 pt1y 0 pt2x 0 pt2y 0 pt3x 0 pt3y 0 pt4x 0 pt4y 0 ptex00 0 ptex01 0 ptex02 0 ptex03 0 ptex10 0 ptex11 0 ptex12 0 ptex13 0 ptex20 0 ptex21 0 ptex22 0 ptex23 0 ptex30 0 ptex31 0 ptex32 0 ptex33 0 ptof1x 0 ptof1y 0 ptof2x 0 ptof2y 0 ptof3x 0 ptof3y 0 ptof4x 0 ptof4y 0 pterr 0 ptrefset 0 ptmot x40800000 ptref 0}}}}}
+ toolbox {selectAll {
+  { selectAll bs 113 str 1 ssx 1 ssy 1 sf 1 }
+  { createBezier str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createBezierCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createBSpline str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createEllipse str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangle str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangleCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createOpenSpline str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { brush bs 113 str 1 ssx 1 ssy 1 sf 1 sb 1 tt 17 }
+  { eraser src 2 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { clone src 1 stx -21.2999 sty -24.5999 str 1 ssx 1 ssy 1 sf 1 sb 1 ltn 295 ltm 295 tt 19 }
+  { reveal src 3 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { dodge src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { burn src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { blur bs 40 src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 ltn 295 ltm 295 tt 23 }
+  { sharpen src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { smear src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+} }
+ toolbar_brush_size 40
+ toolbar_brush_hardness 0.200000003
+ toolbar_lifetime_type single
+ toolbar_lifetime_start 295
+ toolbar_lifetime_end 295
+ toolbar_effect_parameter1 15
+ toolbar_paint_source fg
+ toolbar_source_transform_scale {1 1}
+ toolbar_source_transform_center {1024 778}
+ colorOverlay {0 0 0 0}
+ paint_source foreground
+ lifetime_start 295
+ lifetime_end 295
+ view {}
+ motionblur_on true
+ brush_type blur
+ brush_size 40
+ brush_spacing 0.05000000075
+ brush_hardness 0.200000003
+ effect_parameter1 15
+ source_black_outside true
+ name RotoPaint1
+ selected true
+ xpos 299
+ ypos 500
+ cached true
+}
+push $N87f47c00
+RotoPaint {
+ curves {{{v x3f99999a}
+  {f 0}
+  {n
+   {layer Root
+    {f 0}
+    {t x44800000 x44428000}
+    {a}}}}}
+ toolbox {selectAll {
+  { selectAll str 1 ssx 1 ssy 1 sf 1 }
+  { createBezier str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createBezierCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createBSpline str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createEllipse str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangle str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangleCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createOpenSpline str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { brush str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { eraser src 2 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { clone src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { reveal src 3 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { dodge src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { burn src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { blur src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { sharpen src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { smear src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+} }
+ toolbar_source_transform_center {1024 778}
+ name RotoPaint2
+ selected true
+ xpos 6
+ ypos 415
+}
+MergeExpression {
+ inputs 2
+ expr0 "Ar > .5 ? Br + (2*(Ar-.5)) : Br + 2*Ar -1"
+ expr1 "Ag > .5 ? Bg + (2*(Ag-.5)) : Bg + 2*Ag -1"
+ expr2 "Ab > .5 ? Bb + (2*(Ab-.5)) : Bb + 2*Ab -1"
+ name Linear_Light_Me
+ label "Equivalent of a Linear Light\nblending mode in Photoshop"
+ selected true
+ xpos 6
+ ypos 484
+}
+StickyNote {
+ inputs 0
+ name StickyNote3
+ label "Paint Highlights and Shadows ----->"
+ selected true
+ xpos -178
+ ypos 413
+}
+StickyNote {
+ inputs 0
+ name StickyNote1
+ label "Adjust Low Pass \nFilter Gaussian Blur ----->"
+ selected true
+ xpos -130
+ ypos 258
+}
+StickyNote {
+ inputs 0
+ name StickyNote2
+ label "<--------- Paint Texture Details"
+ selected true
+ xpos 439
+ ypos 501
+}

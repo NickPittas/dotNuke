@@ -1,0 +1,37 @@
+set cut_paste_input [stack 0]
+version 10.5 v1
+push $cut_paste_input
+Constant {
+ inputs 0
+ channels rgb
+ color {0.339458704 0.4478149116 0.5703520775 7.076843076e-007}
+ name Constant2
+ selected true
+ xpos 409
+ ypos 1058
+}
+Merge2 {
+ inputs 2
+ operation divide
+ name Merge5
+ selected true
+ xpos 409
+ ypos 1164
+}
+Saturation {
+ saturation 0.48
+ name Saturation2
+ selected true
+ xpos 409
+ ypos 1238
+}
+push 0
+Merge2 {
+ inputs 2
+ operation multiply
+ bbox B
+ name Merge6
+ selected true
+ xpos 550
+ ypos 1238
+}

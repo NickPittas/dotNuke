@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="-1" y="-6" w="1920" h="1010" maximized="1" screen="0">
+        <splitter orientation="1">
+            <split size="991"/>
+            <splitter orientation="1">
+                <split size="991"/>
+                <dock id="" activePageId="Viewer.1">
+                    <page id="Viewer.1"/>
+                </dock>
+            </splitter>
+            <split size="925"/>
+            <splitter orientation="2">
+                <split size="564"/>
+                <dock id="" activePageId="Properties.1" focus="true">
+                    <page id="Properties.1"/>
+                    <page id="uk.co.thefoundry.backgroundrenderview.1"/>
+                    <page id="Progress.1"/>
+                    <page id="com.adrianpueyo.KnobScripterPane"/>
+                </dock>
+                <split size="401"/>
+                <dock id="" hideTitles="1" activePageId="DAG.1">
+                    <page id="DAG.1"/>
+                </dock>
+            </splitter>
+        </splitter>
+    </window>
+</layout>

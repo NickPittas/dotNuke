@@ -1,0 +1,501 @@
+set cut_paste_input [stack 0]
+version 7.0 v8
+BackdropNode {
+ inputs 0
+ name BackdropNode13
+ tile_color 0x71c67100
+ label "Camera Flashes"
+ note_font_size 42
+ selected true
+ xpos -3264
+ ypos 1729
+ bdwidth 558
+ bdheight 145
+}
+StickyNote {
+ inputs 0
+ name StickyNote1
+ label "Add this before     --->\nthe Lens Flare         "
+ note_font_size 31
+ selected true
+ xpos -3560
+ ypos 1745
+}
+Camera2 {
+ inputs 0
+ read_from_file true
+ rot_order XYZ
+ translate {{curve x1 -927.2817993 -901.6624756 -876.0432129 -850.4238892 -824.8046265 -799.1853027 -773.56604 -747.9467163 -722.3273926 -696.7081299 -671.0888062 -645.4695435 -619.8502197 -594.230957 -568.6116333 -542.9923706 -517.3730469 -491.7537537 -466.1344604 -440.5151672 -414.895874 -389.2765503 -363.6572571 -338.0379639 -312.4186707 -286.7993774 -261.1800842 -235.5607758 -209.9414825 -184.3221893 -158.7028809 -133.0835876 -107.464325} {curve x1 -47729.48047 -47738.09375 -47746.70703 -47755.31641 -47763.92969 -47772.54297 -47781.15625 -47789.76563 -47798.37891 -47806.99219 -47815.60547 -47824.21875 -47832.82813 -47841.44141 -47850.05469 -47858.66797 -47867.28125 -47875.89063 -47884.50391 -47893.11719 -47901.73047 -47910.33984 -47918.95313 -47927.56641 -47936.17969 -47944.79297 -47953.40234 -47962.01563 -47970.62891 -47979.24219 -47987.85156 -47996.46484 -48005.07813} {curve x1 -76186.40625 -76165.61719 -76144.82031 -76124.03125 -76103.24219 -76082.44531 -76061.65625 -76040.86719 -76020.07813 -75999.28125 -75978.49219 -75957.70313 -75936.90625 -75916.11719 -75895.32813 -75874.53125 -75853.74219 -75832.95313 -75812.15625 -75791.36719 -75770.57813 -75749.78125 -75728.99219 -75708.20313 -75687.40625 -75666.61719 -75645.82813 -75625.03906 -75604.24219 -75583.45313 -75562.66406 -75541.86719 -75521.07813}}
+ rotate {{curve x1 -11.78316784 -11.84410095 -11.90503407 -11.96596718 -12.02690029 -12.0878334 -12.14876652 -12.20969963 -12.27063274 -12.33156586 -12.39249897 -12.45343208 -12.5143652 -12.57529831 -12.63623142 -12.69716454 -12.75809765 -12.81903076 -12.87996387 -12.94089699 -13.0018301 -13.06276321 -13.12369633 -13.18462944 -13.24556255 -13.30649567 -13.36742878 -13.42836189 -13.48929501 -13.55022812 -13.61116123 -13.67209435 -13.73302746} {curve x1 -116.8466949 -117.1216812 -117.3966751 -117.6716614 -117.9466553 -118.2216415 -118.4966278 -118.7716217 -119.046608 -119.3216019 -119.5965881 -119.8715744 -120.1465683 -120.4215546 -120.6965485 -120.9715347 -121.246521 -121.5215149 -121.7965012 -122.0714951 -122.3464813 -122.6214752 -122.8964615 -123.1714478 -123.4464417 -123.7214279 -123.9964218 -124.2714081 -124.5463943 -124.8213882 -125.0963745 -125.3713684 -125.6463547} {curve x1 -0.570881784 -0.5668661594 -0.5628504753 -0.5588348508 -0.5548192263 -0.5508036017 -0.5467879176 -0.5427722931 -0.5387566686 -0.534741044 -0.5307253599 -0.5267097354 -0.5226941109 -0.5186784863 -0.5146628022 -0.5106471777 -0.5066315532 -0.502615869 -0.4986002445 -0.49458462 -0.4905689657 -0.4865533412 -0.4825376868 -0.4785220623 -0.474506408 -0.4704907835 -0.4664751291 -0.4624595046 -0.4584438503 -0.4544282258 -0.4504125714 -0.4463969469 -0.4423812926}}
+ scaling {15.48499966 15.48499966 15.48499966}
+ focal 35
+ haperture 35.99992752
+ vaperture 23.99995222
+ near 0.009999999776
+ far 600000
+ file "D:/0047_ EmiratesNBD-ManUtd Video/Camera Flashes addition/elements/Cameras/part3_shot4.fbx"
+ fbx_node_name {{7} "Producer Perspective" "Producer Top" "Producer Bottom" "Producer Front" "Producer Back" "Producer Right" "Producer Left" part3_shot4_cam}
+ frame_rate 25
+ name Camera3
+ selected true
+ xpos -3231
+ ypos 1807
+}
+push 0
+Group {
+ inputs 2
+ name FLASH_LOOK
+ selected true
+ xpos -3121
+ ypos 1828
+ addUserKnob {20 User}
+ addUserKnob {41 brightness T Glow7.brightness}
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {41 brightness_1 l brightness T Glow6.brightness}
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {41 length T Glint2.length}
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {41 length_1 l length T Glint3.length}
+}
+ Input {
+  inputs 0
+  name Prayers
+  note_font_size 8
+  xpos -504
+  ypos 272
+ }
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name Shuffle7
+  xpos -767
+  ypos 272
+ }
+ Input {
+  inputs 0
+  name Camera
+  note_font_size 8
+  xpos -1129
+  ypos 191
+  number 1
+ }
+set N39485df0 [stack 0]
+push $N39485df0
+ Constant {
+  inputs 0
+  channels rgb
+  format "1024 1024 0 0 1024 1024 1 square_1K"
+  name Constant2
+  xpos -1168
+  ypos -338
+ }
+ Noise {
+  size 20
+  zoffset {{curve l x1 0 x50 5}}
+  lacunarity 2.25
+  gain 0.67
+  gamma 0.538
+  center {640 360}
+  name Noise2
+  xpos -1168
+  ypos -266
+ }
+set N394864d0 [stack 0]
+ Read {
+  inputs 0
+  file "D:/0047_ EmiratesNBD-ManUtd Video/Camera Flashes addition/elements/PhotoFlashes_PArticleTexture_01/masterLayer.###.iff"
+  format "1024 1024 0 0 1024 1024 1 square_1K"
+  before loop
+  last 99
+  after loop
+  origlast 99
+  origset true
+  name Read4
+  xpos -888
+  ypos -341
+ }
+ Grade {
+  white {0.4730578661 0.7714729309 1 1}
+  name Grade7
+  xpos -888
+  ypos -203
+ }
+ TimeBlur {
+  shutter 1.5
+  shutteroffset start
+  shuttercustomoffset 0
+  name TimeBlur1
+  xpos -888
+  ypos -179
+ }
+set N39487290 [stack 0]
+ Dot {
+  name Dot3
+  xpos -706
+  ypos -176
+ }
+set N39487600 [stack 0]
+ Dot {
+  name Dot5
+  xpos -589
+  ypos -176
+ }
+ TimeOffset {
+  time_offset 60
+  reverse_input true
+  name TimeOffset4
+  xpos -623
+  ypos -129
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge4
+  xpos -623
+  ypos -73
+ }
+ ReadGeo2 {
+  file "D:/0047_ EmiratesNBD-ManUtd Video/Camera Flashes addition/elements/Stadium_Elements_to_Nuke.fbx"
+  cacheLocal never
+  fbx_node_name {{4} PeoplePlane1 PeoplePlane2 PeoplePlane3 PeoplePlane4 PeoplePlane5 Lights}
+  rot_order XYZ
+  name ReadGeo5
+  xpos -623
+  ypos -49
+ }
+push $N394864d0
+push $N39487600
+ TimeOffset {
+  time_offset 30
+  reverse_input true
+  name TimeOffset3
+  xpos -740
+  ypos -130
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge3
+  xpos -740
+  ypos -71
+ }
+ ReadGeo2 {
+  file "D:/0047_ EmiratesNBD-ManUtd Video/Camera Flashes addition/elements/Stadium_Elements_to_Nuke.fbx"
+  cacheLocal never
+  fbx_node_name {{3} PeoplePlane1 PeoplePlane2 PeoplePlane3 PeoplePlane4 PeoplePlane5 Lights}
+  read_on_each_frame true
+  name ReadGeo4
+  xpos -740
+  ypos -47
+ }
+push $N394864d0
+push $N39487290
+ TimeOffset {
+  time_offset 60
+  name TimeOffset2
+  xpos -888
+  ypos -129
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge2
+  xpos -888
+  ypos -70
+ }
+ ReadGeo2 {
+  file "D:/0047_ EmiratesNBD-ManUtd Video/Camera Flashes addition/elements/Stadium_Elements_to_Nuke.fbx"
+  cacheLocal never
+  fbx_node_name {{2} PeoplePlane1 PeoplePlane2 PeoplePlane3 PeoplePlane4 PeoplePlane5 Lights}
+  read_on_each_frame true
+  name ReadGeo3
+  xpos -888
+  ypos -46
+ }
+push $N394864d0
+push $N39487290
+ Dot {
+  name Dot2
+  xpos -971
+  ypos -176
+ }
+set N39489180 [stack 0]
+ TimeOffset {
+  time_offset 30
+  name TimeOffset1
+  xpos -1005
+  ypos -129
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge1
+  xpos -1005
+  ypos -73
+ }
+ ReadGeo2 {
+  file "D:/0047_ EmiratesNBD-ManUtd Video/Camera Flashes addition/elements/Stadium_Elements_to_Nuke.fbx"
+  cacheLocal never
+  fbx_node_name {{1} PeoplePlane1 PeoplePlane2 PeoplePlane3 PeoplePlane4 PeoplePlane5 Lights}
+  read_on_each_frame true
+  name ReadGeo2
+  xpos -1005
+  ypos -49
+ }
+push $N394864d0
+push $N39489180
+ Dot {
+  name Dot1
+  xpos -1087
+  ypos -176
+ }
+ Merge2 {
+  inputs 2
+  operation multiply
+  name Merge15
+  xpos -1121
+  ypos -72
+ }
+ ReadGeo2 {
+  file "D:/0047_ EmiratesNBD-ManUtd Video/Camera Flashes addition/elements/Stadium_Elements_to_Nuke.fbx"
+  cacheLocal never
+  read_on_each_frame true
+  name ReadGeo1
+  xpos -1121
+  ypos -48
+ }
+ Scene {
+  inputs 6
+  name Scene1
+  xpos -878
+  ypos 70
+ }
+push 0
+ ScanlineRender {
+  inputs 3
+  motion_vectors_type distance
+  name ScanlineRender2
+  xpos -888
+  ypos 190
+ }
+ Grade {
+  white 2.98
+  name Grade1
+  xpos -888
+  ypos 214
+ }
+ Clamp {
+  name Clamp1
+  xpos -888
+  ypos 238
+ }
+ Merge2 {
+  inputs 2
+  operation stencil
+  name Merge16
+  xpos -888
+  ypos 272
+ }
+ Dot {
+  name Dot11
+  xpos -854
+  ypos 314
+ }
+set N2247be20 [stack 0]
+ Dot {
+  name Dot10
+  xpos -744
+  ypos 314
+ }
+set N2247c190 [stack 0]
+ Glint {
+  repeat 12
+  length 44
+  rotation 77
+  steps 6
+  tolerance 0.022
+  name Glint3
+  xpos -778
+  ypos 586
+ }
+push $N2247be20
+ Dilate {
+  size 3
+  name Dilate2
+  xpos -888
+  ypos 344
+ }
+ Glint {
+  length 410
+  rotation 91
+  from_color 0.205
+  steps 7
+  effect_only true
+  tolerance 0.032
+  name Glint2
+  xpos -888
+  ypos 378
+ }
+set N2247cbe0 [stack 0]
+ Dot {
+  name Dot4
+  xpos -964
+  ypos 386
+ }
+set N2247cf50 [stack 0]
+ Dot {
+  name Dot14
+  xpos -1091
+  ypos 386
+ }
+ Transform {
+  rotate 180
+  scale {1.2 1.4}
+  center {640 360}
+  name Transform2
+  xpos -1125
+  ypos 451
+ }
+ Grade {
+  blackpoint 0.001
+  whitepoint 0.115
+  white {1.047599912 1.1431427 1.940000057 1}
+  name Grade10
+  xpos -1125
+  ypos 475
+ }
+ Blur {
+  size {401.6 15}
+  name Blur8
+  xpos -1125
+  ypos 499
+ }
+set N2247dd10 [stack 0]
+ Blur {
+  size {200 80}
+  name Blur9
+  xpos -1125
+  ypos 533
+ }
+ Grade {
+  blackpoint 0.001
+  whitepoint 0.115
+  white {1.940000057 1.940000057 1.940000057 1}
+  name Grade11
+  xpos -1125
+  ypos 567
+ }
+push $N2247dd10
+push $N2247cf50
+ Transform {
+  translate {55 -13}
+  center {640 360}
+  name Transform1
+  xpos -998
+  ypos 421
+ }
+ Blur {
+  size 12.6
+  name Blur7
+  xpos -998
+  ypos 445
+ }
+push $N2247cbe0
+ Merge2 {
+  inputs 2
+  operation plus
+  mix 0.81
+  name Merge17
+  xpos -888
+  ypos 450
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  mix 0.1
+  name Merge18
+  xpos -888
+  ypos 504
+ }
+ Merge2 {
+  inputs 2
+  mix 0.03
+  name Merge19
+  xpos -888
+  ypos 567
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge14
+  xpos -888
+  ypos 591
+ }
+ Blur {
+  size 4
+  name Blur4
+  xpos -888
+  ypos 615
+ }
+ Grade {
+  white {0.5097403526 0.7781601548 1 1}
+  name Grade8
+  xpos -888
+  ypos 672
+ }
+push $N2247c190
+ Dot {
+  name Dot12
+  xpos -634
+  ypos 314
+ }
+ Blur {
+  size 8.1
+  name Blur2
+  xpos -668
+  ypos 558
+ }
+ Glow2 {
+  brightness 2.47
+  size 10.6
+  name Glow5
+  xpos -668
+  ypos 592
+ }
+ Glow2 {
+  brightness 11
+  size 39
+  name Glow6
+  xpos -668
+  ypos 616
+ }
+ Glow2 {
+  brightness 4.3
+  size 99
+  name Glow7
+  xpos -668
+  ypos 640
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge13
+  xpos -668
+  ypos 672
+ }
+ Output {
+  name Output1
+  xpos -668
+  ypos 756
+ }
+end_group
+push 0
+Merge2 {
+ inputs 2
+ operation plus
+ name Merge22
+ selected true
+ xpos -2812
+ ypos 1828
+}

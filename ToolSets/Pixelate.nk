@@ -1,0 +1,35 @@
+set cut_paste_input [stack 0]
+version 8.0 v5
+push $cut_paste_input
+Dot {
+name Dot1
+selected true
+xpos 280
+ypos -155
+}
+Transform {
+scale 0.12
+center {960 540}
+filter Impulse
+name Transform10
+selected true
+xpos 246
+ypos -80
+}
+Blur {
+channels rgba
+name Blur4
+selected true
+xpos 246
+ypos -56
+}
+Transform {
+scale {{Transform10.scale}}
+center {{parent.Transform10.center} {parent.Transform10.center}}
+invert_matrix true
+filter Impulse
+name Transform11
+selected true
+xpos 246
+ypos -28
+}
